@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gülüm 💖</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    overflow:hidden;
+    height:100vh;
+    background:linear-gradient(to bottom,#ffb6d9,#ff7eb6);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:relative;
+}
+
+/* HEARTS */
+
+.heart{
+    position:absolute;
+    bottom:-50px;
+    color:#ff2d75;
+    animation:float linear forwards;
+    pointer-events:none;
+    user-select:none;
+}
+
+@keyframes float{
+    to{
+        transform:translateY(-120vh) rotate(360deg);
+        opacity:0;
+    }
+}
+
+/* MAIN */
+
+.container{
+    width:90%;
+    max-width:380px;
+    background:rgba(255,255,255,0.18);
+    backdrop-filter:blur(10px);
+    border-radius:28px;
+    padding:22px;
+    text-align:center;
+    z-index:10;
+    box-shadow:0 10px 30px rgba(0,0,0,0.15);
+}
+
+/* PHOTO */
+
+.photo{
+    width:220px;
+    height:220px;
+    object-fit:cover;
+    border-radius:25px;
+    border:5px solid white;
+    margin-bottom:20px;
+    transition:0.4s;
+}
+
+/* QUESTION */
+
+h1{
+    color:white;
+    margin-bottom:25px;
+    font-size:24px;
+    line-height:1.4;
+    text-shadow:1px 1px 5px rgba(0,0,0,0.2);
+    transition:0.5s;
+}
+
+/* BUTTONS */
+
+.buttons{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+}
+
+button{
+    border:none;
+    border-radius:18px;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.25s;
+    min-height:55px;
+    padding:12px;
+}
+
+#yesBtn{
+    background:#33cc66;
+    width:220px;
+}
+
+#noBtn{
+    background:#ff3b3b;
+    width:220px;
+}
+
+/* SHAKE */
+
+.shake{
+    animation:shake 0.3s;
+}
+
+@keyframes shake{
+    0%{transform:translateX(0);}
+    25%{transform:translateX(-5px);}
+    50%{transform:translateX(5px);}
+    75%{transform:translateX(-5px);}
+    100%{transform:translateX(0);}
+}
+
+/* FINAL */
+
+.message{
+    margin-top:20px;
+    display:none;
+}
+
+.final-photo{
+    width:220px;
+    height:220px;
+    object-fit:cover;
+    border-radius:25px;
+    border:5px solid white;
+    margin-top:20px;
+    animation:pop 0.5s ease;
+}
+
+.final-text{
+    margin-top:18px;
+    color:white;
+    font-size:24px;
+    font-weight:bold;
+    line-height:1.5;
+    text-shadow:1px 1px 5px rgba(0,0,0,0.2);
+    animation:pop 0.5s ease;
+}
+
+@keyframes pop{
+    0%{
+        transform:scale(0.7);
+        opacity:0;
+    }
+    100%{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <img src="cats/cat1.jpeg" class="photo" id="catImage">
+
+    <h1 id="question">
+        Kim kimi daha çox sevir, gülüm? 💖
+    </h1>
+
+    <div class="buttons">
+
+        <button id="yesBtn">
+            Mən səni daha çox sevirəm 🤍
+        </button>
+
+        <button id="noBtn">
+            Yox mən səni daha çox sevirəm ❤️
+        </button>
+
+    </div>
+
+    <div class="message" id="message">
+
+        <img src="final.jpeg" class="final-photo">
+
+        <div class="final-text">
+            BA BELƏ AĞILLI 😂 <br>
+            Bütün həyatına pazam inşAllah cənnətimmm 💖<br>
+            Səni çox sevirəm :3
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* HEARTS */
+
+function createHeart(){
+
+    const heart = document.createElement("div");
+
+    heart.classList.add("heart");
+
+    heart.innerHTML = "💖";
+
+    heart.style.left = Math.random() * 100 + "vw";
+
+    heart.style.fontSize =
+        (15 + Math.random() * 25) + "px";
+
+    heart.style.animationDuration =
+        (4 + Math.random() * 5) + "s";
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+        heart.remove();
+    }, 9000);
+}
+
+setInterval(createHeart,250);
+
+/* ELEMENTS */
+
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const catImage = document.getElementById("catImage");
+const message = document.getElementById("message");
+const question = document.getElementById("question");
+
+/* STATES */
+
+let yesWidth = 220;
+let yesHeight = 55;
+
+let noWidth = 220;
+let noHeight = 55;
+
+let step = 0;
+
+/* KITTY IMAGES */
+
+const catImages = [
+    "cats/cat1.jpg",
+    "cats/cat2.jpg",
+    "cats/cat3.jpg",
+    "cats/cat4.jpg",
+    "cats/cat5.jpg"
+];
+
+/* BUTTON TEXTS */
+
+const yesTexts = [
+    "Mən səni daha çox sevirəm 💚",
+    "Dedim axı mən daha çox sevirəm 😤",
+    "Yalan danışmaa 😡",
+    "Qəbul elə artıq 😭",
+    "TOPPİLİMM BAS BUNU DAY BOO 😭"
+];
+
+const noTexts = [
+    "Yox mən səni daha çox sevirəm ❤️",
+    "Əslaa 😤",
+    "İnanmıram 😡",
+    "Mənəm deyirəmmm 😭",
+    "Axırıncı dəfə deyirəm. 😈"
+];
+
+/* EARLY GREEN CLICK TEXTS */
+
+const lockedTexts = [
+    "Bir də fikirləş 😌",
+    "Əminsən? 🙄",
+    "Az yaxşıda adamın insafı olar 😭"
+];
+
+let lockedClick = 0;
+let questionHidden = false;
+
+/* RED BUTTON CLICK */
+
+noBtn.addEventListener("click", () => {
+
+    step++;
+
+    /* 👉 QUESTION DISAPPEARS AFTER FIRST INTERACTION */
+    if(!questionHidden){
+        question.style.opacity = "0";
+        question.style.transform = "translateY(-10px)";
+        setTimeout(() => {
+            question.style.display = "none";
+        }, 400);
+        questionHidden = true;
+    }
+
+    if(step >= catImages.length){
+        step = catImages.length - 1;
+    }
+
+    /* GREEN GROWS */
+
+    yesWidth += 55;
+    yesHeight += 12;
+
+    yesBtn.style.width = yesWidth + "px";
+    yesBtn.style.height = yesHeight + "px";
+
+    /* RED SHRINKS */
+
+    noWidth -= 25;
+    noHeight -= 4;
+
+    noBtn.style.width =
+        Math.max(noWidth,70) + "px";
+
+    noBtn.style.height =
+        Math.max(noHeight,32) + "px";
+
+    /* PUSH RED DOWN */
+
+    noBtn.style.marginTop =
+        (step * 20) + "px";
+
+    /* TEXT CHANGE */
+
+    yesBtn.innerHTML = yesTexts[step];
+    noBtn.innerHTML = noTexts[step];
+
+    /* KITTY CHANGE */
+
+    catImage.src = catImages[step];
+
+    /* FULLSCREEN */
+
+    if(yesWidth > window.innerWidth * 0.9){
+
+        yesBtn.style.position = "fixed";
+        yesBtn.style.top = "0";
+        yesBtn.style.left = "0";
+        yesBtn.style.width = "100vw";
+        yesBtn.style.height = "100vh";
+        yesBtn.style.borderRadius = "0";
+        yesBtn.style.zIndex = "999";
+        yesBtn.style.fontSize = "42px";
+
+        noBtn.style.display = "none";
+    }
+
+});
+
+/* GREEN BUTTON CLICK */
+
+yesBtn.addEventListener("click", () => {
+
+    /* LOCK EARLY CLICKS */
+
+    if(step < 3){
+
+        yesBtn.classList.add("shake");
+
+        setTimeout(() => {
+            yesBtn.classList.remove("shake");
+        },300);
+
+        yesBtn.innerHTML =
+            lockedTexts[
+                Math.min(lockedClick,lockedTexts.length-1)
+            ];
+
+        lockedClick++;
+
+        return;
+    }
+
+    /* FINAL SCREEN */
+
+    document.querySelector(".buttons").style.display = "none";
+
+    catImage.style.display = "none";
+
+    question.innerHTML =
+        "Axır ki həqiqəti qəbul elədin 😌💖";
+
+    message.style.display = "block";
+
+});
+
+</script>
+
+</body>
+</html>
