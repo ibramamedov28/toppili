@@ -65,7 +65,6 @@ body{
     border-radius:25px;
     border:5px solid white;
     margin-bottom:20px;
-    transition:0.4s;
 }
 
 /* QUESTION */
@@ -76,7 +75,7 @@ h1{
     font-size:24px;
     line-height:1.4;
     text-shadow:1px 1px 5px rgba(0,0,0,0.2);
-    transition:0.5s;
+    transition:0.4s;
 }
 
 /* BUTTONS */
@@ -95,9 +94,10 @@ button{
     font-size:16px;
     font-weight:bold;
     cursor:pointer;
-    transition:0.25s;
+    transition:0.2s;
     min-height:55px;
     padding:12px;
+    will-change:transform,width,height;
 }
 
 #yesBtn{
@@ -138,7 +138,6 @@ button{
     border-radius:25px;
     border:5px solid white;
     margin-top:20px;
-    animation:pop 0.5s ease;
 }
 
 .final-text{
@@ -148,18 +147,6 @@ button{
     font-weight:bold;
     line-height:1.5;
     text-shadow:1px 1px 5px rgba(0,0,0,0.2);
-    animation:pop 0.5s ease;
-}
-
-@keyframes pop{
-    0%{
-        transform:scale(0.7);
-        opacity:0;
-    }
-    100%{
-        transform:scale(1);
-        opacity:1;
-    }
 }
 
 </style>
@@ -169,7 +156,7 @@ button{
 
 <div class="container">
 
-    <img src="cats/cat1.jpeg" class="photo" id="catImage">
+    <img src="cats/cat1.jpg" class="photo" id="catImage">
 
     <h1 id="question">
         Kim kimi daha çox sevir, gülüm? 💖
@@ -178,7 +165,7 @@ button{
     <div class="buttons">
 
         <button id="yesBtn">
-            Mən səni daha çox sevirəm 🤍
+            Mən səni daha çox sevirəm 💚
         </button>
 
         <button id="noBtn">
@@ -189,7 +176,7 @@ button{
 
     <div class="message" id="message">
 
-        <img src="final.jpeg" class="final-photo">
+        <img src="final.jpg" class="final-photo">
 
         <div class="final-text">
             BA BELƏ AĞILLI 😂 <br>
@@ -203,32 +190,24 @@ button{
 
 <script>
 
-/* HEARTS */
+/* HEARTS (lighter for mobile stability) */
 
 function createHeart(){
 
     const heart = document.createElement("div");
-
     heart.classList.add("heart");
-
     heart.innerHTML = "💖";
 
     heart.style.left = Math.random() * 100 + "vw";
-
-    heart.style.fontSize =
-        (15 + Math.random() * 25) + "px";
-
-    heart.style.animationDuration =
-        (4 + Math.random() * 5) + "s";
+    heart.style.fontSize = (12 + Math.random() * 18) + "px";
+    heart.style.animationDuration = (5 + Math.random() * 3) + "s";
 
     document.body.appendChild(heart);
 
-    setTimeout(() => {
-        heart.remove();
-    }, 9000);
+    setTimeout(() => heart.remove(), 9000);
 }
 
-setInterval(createHeart,250);
+setInterval(createHeart, 400);
 
 /* ELEMENTS */
 
@@ -238,17 +217,18 @@ const catImage = document.getElementById("catImage");
 const message = document.getElementById("message");
 const question = document.getElementById("question");
 
-/* STATES */
-
-let yesWidth = 220;
-let yesHeight = 55;
-
-let noWidth = 220;
-let noHeight = 55;
+/* STATE */
 
 let step = 0;
+let lockedClick = 0;
+let questionHidden = false;
 
-/* KITTY IMAGES */
+/* LIMITS (prevents mobile overflow bug) */
+
+const maxW = window.innerWidth * 0.92;
+const maxH = window.innerHeight * 0.55;
+
+/* IMAGES */
 
 const catImages = [
     "cats/cat1.jpg",
@@ -258,14 +238,14 @@ const catImages = [
     "cats/cat5.jpg"
 ];
 
-/* BUTTON TEXTS */
+/* TEXTS */
 
 const yesTexts = [
     "Mən səni daha çox sevirəm 💚",
     "Dedim axı mən daha çox sevirəm 😤",
     "Yalan danışmaa 😡",
     "Qəbul elə artıq 😭",
-    "TOPPİLİMM BAS BUNU DAY BOO 😭"
+    "TOPPİLİMM BAS BUNU 😭"
 ];
 
 const noTexts = [
@@ -273,33 +253,26 @@ const noTexts = [
     "Əslaa 😤",
     "İnanmıram 😡",
     "Mənəm deyirəmmm 😭",
-    "Axırıncı dəfə deyirəm. 😈"
+    "Axırıncı dəfə 😈"
 ];
-
-/* EARLY GREEN CLICK TEXTS */
 
 const lockedTexts = [
     "Bir də fikirləş 😌",
     "Əminsən? 🙄",
-    "Az yaxşıda adamın insafı olar 😭"
+    "Hələ tezdir 😭"
 ];
 
-let lockedClick = 0;
-let questionHidden = false;
-
-/* RED BUTTON CLICK */
+/* RED CLICK */
 
 noBtn.addEventListener("click", () => {
 
     step++;
 
-    /* 👉 QUESTION DISAPPEARS AFTER FIRST INTERACTION */
+    /* hide question once (FIX) */
     if(!questionHidden){
+        question.style.transition = "0.4s";
         question.style.opacity = "0";
-        question.style.transform = "translateY(-10px)";
-        setTimeout(() => {
-            question.style.display = "none";
-        }, 400);
+        setTimeout(() => question.style.display = "none", 400);
         questionHidden = true;
     }
 
@@ -307,42 +280,35 @@ noBtn.addEventListener("click", () => {
         step = catImages.length - 1;
     }
 
-    /* GREEN GROWS */
+    /* SAFE GREEN GROW (FIXED MOBILE OVERFLOW) */
 
-    yesWidth += 55;
-    yesHeight += 12;
+    let w = yesBtn.offsetWidth + 40;
+    let h = yesBtn.offsetHeight + 8;
 
-    yesBtn.style.width = yesWidth + "px";
-    yesBtn.style.height = yesHeight + "px";
+    yesBtn.style.width = Math.min(w, maxW) + "px";
+    yesBtn.style.height = Math.min(h, maxH) + "px";
 
-    /* RED SHRINKS */
+    /* RED SHRINK */
 
-    noWidth -= 25;
-    noHeight -= 4;
+    let rw = noBtn.offsetWidth - 18;
+    noBtn.style.width = Math.max(rw, 70) + "px";
 
-    noBtn.style.width =
-        Math.max(noWidth,70) + "px";
+    /* MOVE RED */
 
-    noBtn.style.height =
-        Math.max(noHeight,32) + "px";
+    noBtn.style.marginTop = (step * 14) + "px";
 
-    /* PUSH RED DOWN */
-
-    noBtn.style.marginTop =
-        (step * 20) + "px";
-
-    /* TEXT CHANGE */
+    /* TEXT */
 
     yesBtn.innerHTML = yesTexts[step];
     noBtn.innerHTML = noTexts[step];
 
-    /* KITTY CHANGE */
+    /* IMAGE */
 
     catImage.src = catImages[step];
 
-    /* FULLSCREEN */
+    /* FINAL TAKEOVER */
 
-    if(yesWidth > window.innerWidth * 0.9){
+    if(yesBtn.offsetWidth > maxW * 0.9){
 
         yesBtn.style.position = "fixed";
         yesBtn.style.top = "0";
@@ -351,46 +317,33 @@ noBtn.addEventListener("click", () => {
         yesBtn.style.height = "100vh";
         yesBtn.style.borderRadius = "0";
         yesBtn.style.zIndex = "999";
-        yesBtn.style.fontSize = "42px";
+        yesBtn.style.fontSize = "38px";
 
         noBtn.style.display = "none";
     }
 
 });
 
-/* GREEN BUTTON CLICK */
+/* GREEN CLICK */
 
 yesBtn.addEventListener("click", () => {
-
-    /* LOCK EARLY CLICKS */
 
     if(step < 3){
 
         yesBtn.classList.add("shake");
-
-        setTimeout(() => {
-            yesBtn.classList.remove("shake");
-        },300);
+        setTimeout(() => yesBtn.classList.remove("shake"), 300);
 
         yesBtn.innerHTML =
-            lockedTexts[
-                Math.min(lockedClick,lockedTexts.length-1)
-            ];
+            lockedTexts[Math.min(lockedClick, lockedTexts.length-1)];
 
         lockedClick++;
-
         return;
     }
 
-    /* FINAL SCREEN */
-
     document.querySelector(".buttons").style.display = "none";
-
     catImage.style.display = "none";
 
-    question.innerHTML =
-        "Axır ki həqiqəti qəbul elədin 😌💖";
-
+    question.innerHTML = "Axır ki həqiqəti qəbul elədin 😌💖";
     message.style.display = "block";
 
 });
